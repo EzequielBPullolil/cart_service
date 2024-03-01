@@ -15,7 +15,7 @@ import (
 )
 
 func TestAddItemToCart(t *testing.T) {
-	var item = cart.CreateItem("fake name")
+	var item = cart.CreateItem("fake name", "0ARS")
 	itemJSON, err := json.Marshal(item)
 	cart_suject := cart.CreateCart()
 	cart_suject.Persist()
@@ -41,14 +41,14 @@ func TestAddItemToCart(t *testing.T) {
 		app.ServeHTTP(w, req)
 
 		assert.Equal(t, 201, w.Result().StatusCode)
+		t.Run("Should be persisted in DB", func(t *testing.T) {
+			var finded cart.Cart
+			collection := dbmanager.ConnectDB(os.Getenv("DB_URI"), os.Getenv("DB_NAME")).CartCollection
+			collection.FindOne(context.Background(), bson.M{"id": cart_suject.Id}).Decode(&finded)
+
+			assert.Equal(t, finded.Items[0].Name, item.Name)
+			assert.Equal(t, finded.Items[0].Id, item.Id)
+		})
 	})
 
-	t.Run("Should be persisted in DB", func(t *testing.T) {
-		var finded cart.Cart
-		collection := dbmanager.ConnectDB(os.Getenv("DB_URI"), os.Getenv("DB_NAME")).CartCollection
-		collection.FindOne(context.Background(), bson.M{"id": cart_suject.Id}).Decode(&finded)
-
-		assert.Equal(t, finded.Items[0].Name, item.Name)
-		assert.Equal(t, finded.Items[0].Id, item.Id)
-	})
 }

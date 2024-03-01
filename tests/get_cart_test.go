@@ -38,4 +38,26 @@ func TestGetCartFromDb(t *testing.T) {
 		log.Println(response)
 		assert.Empty(t, response.Cart)
 	})
+
+	t.Run("Should calculate the amount of cart", func(t *testing.T) {
+		var cart_suject = cart.CreateCart()
+		w := httptest.NewRecorder()
+		assert.NoError(t, cart_suject.Persist())
+		req := httptest.NewRequest("GET", "/carts/"+cart_suject.Id, nil)
+		app.ServeHTTP(w, req)
+		t.Run("Should be 0 if the cart dont have items", func(t *testing.T) {
+			var response Response
+			app.ServeHTTP(w, req)
+			assert.NoError(t, json.NewDecoder(w.Body).Decode(&response))
+			assert.Equal(t, "0ARS", response.Cart.Amount)
+		})
+		t.Run("Should not be 0 if the cart have items", func(t *testing.T) {
+			var response Response
+			item := cart.CreateItem("fake_item", "20ARS")
+			cart_suject.AddItemAndSave(*item)
+			app.ServeHTTP(w, req)
+			assert.NoError(t, json.NewDecoder(w.Body).Decode(&response))
+			assert.Equal(t, item.Price, response.Cart.Amount)
+		})
+	})
 }
