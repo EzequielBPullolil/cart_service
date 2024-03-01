@@ -1,6 +1,12 @@
 package cart
 
-import "github.com/google/uuid"
+import (
+	"context"
+	"os"
+
+	dbmanager "github.com/EzequielBPullolil/cart_service/src/db_manager"
+	"github.com/google/uuid"
+)
 
 type Cart struct {
 	Id     string     `json:"id"`
@@ -17,5 +23,9 @@ func CreateCart() *Cart {
 }
 
 func (c *Cart) Persist() error {
-	return nil
+	cart_collection := dbmanager.ConnectDB(os.Getenv("DB_URI"), os.Getenv("DB_NAME")).CartCollection
+
+	_, err := cart_collection.InsertOne(context.Background(), c)
+
+	return err
 }

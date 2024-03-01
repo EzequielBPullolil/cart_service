@@ -1,6 +1,8 @@
 package cart
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 func HandleRoutes(g *gin.Engine) {
 	g.POST("/carts", func(ctx *gin.Context) {
