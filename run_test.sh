@@ -1,0 +1,1 @@
+clear && gotestsum --rerun-fails --watch ./... -v 
