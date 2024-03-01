@@ -19,4 +19,10 @@ func HandleRoutes(g *gin.Engine) {
 			"data":   cart,
 		})
 	})
+
+	g.GET("/carts/:cart_id", func(ctx *gin.Context) {
+		ctx.JSON(200, gin.H{
+			"cart": FindCartById(ctx.Param("cart_id")),
+		})
+	})
 }

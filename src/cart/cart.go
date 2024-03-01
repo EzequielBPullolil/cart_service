@@ -29,3 +29,14 @@ func (c *Cart) Persist() error {
 
 	return err
 }
+
+func FindCartById(id string) *Cart {
+	var cart Cart
+	cart_collection := dbmanager.ConnectDB(os.Getenv("DB_URI"), os.Getenv("DB_NAME")).CartCollection
+
+	result := cart_collection.FindOne(context.Background(), Cart{Id: id})
+
+	result.Decode(&cart)
+
+	return &cart
+}
