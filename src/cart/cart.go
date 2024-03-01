@@ -43,7 +43,23 @@ func FindCartById(id string) *Cart {
 	return &cart
 }
 
-	result.Decode(&cart)
+func (c *Cart) AddItemAndSave(item_to_add Item) error {
+	cart_collection := dbmanager.ConnectDB(os.Getenv("DB_URI"), os.Getenv("DB_NAME")).CartCollection
+	if err := c.AddItem(item_to_add); err != nil {
+		return err
+	}
 
-	return &cart
+	update := bson.M{"$set": bson.M{"items": c.Items}}
+	_, error := cart_collection.UpdateOne(context.Background(), bson.M{"id": c.Id}, update)
+	return error
+}
+
+func (c *Cart) AddItem(item_to_add Item) error {
+	for _, v := range c.Items {
+		if v.Id == item_to_add.Id {
+			return errors.New("the item is already in the cart")
+		}
+	}
+	c.Items = append(c.Items, item_to_add)
+	return nil
 }
