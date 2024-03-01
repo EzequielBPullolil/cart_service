@@ -21,8 +21,11 @@ func HandleRoutes(g *gin.Engine) {
 	})
 
 	g.GET("/carts/:cart_id", func(ctx *gin.Context) {
+		cart := FindCartById(ctx.Param("cart_id"))
 		ctx.JSON(200, gin.H{
-			"cart": FindCartById(ctx.Param("cart_id")),
+			"cart": cart,
+		})
+	})
 		})
 	})
 }
