@@ -54,20 +54,21 @@ func (item *Item) ModifieFields(new_fields Item) {
 }
 
 func (item Item) ValidateUpdateFields() bool {
-	if item.Currency == "" {
-		return false
-	}
 
-	if item.Name == "" {
-		return false
-	}
+	return item.ValidateCurrency() && item.ValidateName() && item.ValidateQuantity() && item.ValidatePrice()
+}
 
-	if item.Quantity <= 0 {
-		return false
-	}
+func (i Item) ValidateCurrency() bool {
+	return i.Currency != ""
+}
+func (i Item) ValidateName() bool {
+	return i.Name != ""
+}
 
-	if item.Price < 0 {
-		return false
-	}
-	return true
+func (i Item) ValidateQuantity() bool {
+	return i.Quantity > 0
+}
+
+func (i Item) ValidatePrice() bool {
+	return i.Price > 0
 }
