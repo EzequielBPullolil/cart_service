@@ -18,7 +18,7 @@ func TestAddItemToCart(t *testing.T) {
 	var item = cart.CreateItem("fake name", "ARS", float64(20), 1)
 	itemJSON, err := json.Marshal(item)
 	cart_suject := cart.CreateCart("ARS")
-	cart_suject.Persist()
+	assert.NoError(t, cart_suject.Persist())
 	assert.NoError(t, err)
 	t.Run("Should response with status code 400", func(t *testing.T) {
 		t.Run("if the cart dont exist", func(t *testing.T) {
