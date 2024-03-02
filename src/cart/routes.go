@@ -51,16 +51,17 @@ func HandleRoutes(g *gin.Engine) {
 			log.Println(err)
 			ctx.JSON(400, gin.H{
 				"status": "error adding item to cart",
-				"error":  err.Error(),
+				"error":  "invalid item",
+				"detail": err.Error(),
 			})
 			return
 		}
 		cart := FindCartById(ctx.Param("cart_id"))
 		if cart == nil {
-			log.Println(ctx.Param("cart_id"))
 			ctx.JSON(400, gin.H{
 				"status": "error adding item to cart",
 				"error":  "Cart not found",
+				"detail": "cart with id:" + ctx.Param("cart_id") + "dont exist",
 			})
 			return
 		}
@@ -69,6 +70,7 @@ func HandleRoutes(g *gin.Engine) {
 			ctx.JSON(400, gin.H{
 				"status": "error adding item to cart",
 				"error":  err.Error(),
+				"detail": err.Error(),
 			})
 			return
 		}
