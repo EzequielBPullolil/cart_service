@@ -76,3 +76,26 @@ func (c *Cart) AddItem(item_to_add Item) error {
 	c.Items = append(c.Items, item_to_add)
 	return nil
 }
+
+func (c *Cart) RemoveItemAndSave(item_id string) error {
+	cart_collection := dbmanager.ConnectDB(os.Getenv("DB_URI"), os.Getenv("DB_NAME")).CartCollection
+	c.RemoveItem(item_id)
+
+	update := bson.M{"$set": bson.M{"items": c.Items}}
+	_, error := cart_collection.UpdateOne(context.Background(), bson.M{"id": c.Id}, update)
+
+	return error
+}
+
+// Change the cart list to one without the Item with the ID passed by parameter
+// If there is no item with the passed Id then the list does not change
+func (c *Cart) RemoveItem(item_id string) {
+	new_items := make([]Item, 0)
+	for _, v := range c.Items {
+		if v.Id != item_id {
+			new_items = append(new_items, v)
+		}
+	}
+
+	c.Items = new_items
+}

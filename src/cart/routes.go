@@ -77,4 +77,30 @@ func HandleRoutes(g *gin.Engine) {
 			"data":   cart,
 		})
 	})
+
+	g.DELETE("/carts/:cart_id/items/:item_id", func(ctx *gin.Context) {
+		cart := FindCartById(ctx.Param("cart_id"))
+		if cart == nil {
+			log.Println(ctx.Param("cart_id"))
+			ctx.JSON(400, gin.H{
+				"status": "error removing item from cart",
+				"error":  "Cart not found",
+			})
+			return
+		}
+
+		if err := cart.RemoveItemAndSave(ctx.Param("item_id")); err != nil {
+			log.Println(err)
+			ctx.JSON(400, gin.H{
+				"status": "error adding item to cart",
+				"error":  "Cart not found",
+			})
+			return
+		}
+
+		ctx.JSON(200, gin.H{
+			"status": "cart updated",
+			"cart":   cart,
+		})
+	})
 }
