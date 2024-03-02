@@ -8,13 +8,27 @@ import (
 
 func HandleRoutes(g *gin.Engine) {
 	g.POST("/carts", func(ctx *gin.Context) {
-		cart := CreateCart()
-
-		if err := cart.Persist(); err != nil {
+		var body struct {
+			Currency string      `json:"currency"`
+			User     interface{} `json:"user"`
+		}
+		if err := ctx.BindJSON(&body); err != nil {
+			log.Println("error binding body: " + err.Error())
 			ctx.JSON(400, gin.H{
 				"status": "Cart not created",
 				"error":  err,
 			})
+			return
+		}
+		cart := CreateCart(body.Currency)
+		log.Println("\n Persisted cart with id: " + cart.Id + "\n")
+		if err := cart.Persist(); err != nil {
+			log.Println("error during persist cart: " + err.Error())
+			ctx.JSON(400, gin.H{
+				"status": "Cart not created",
+				"error":  err,
+			})
+			return
 		}
 		ctx.JSON(201, gin.H{
 			"status": "cart created",

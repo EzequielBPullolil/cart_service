@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"log"
@@ -17,7 +18,12 @@ import (
 
 func TestCreateCart(t *testing.T) {
 	w := httptest.NewRecorder()
-	req := httptest.NewRequest("POST", "/carts", nil)
+	req := httptest.NewRequest("POST", "/carts", bytes.NewBufferString(`{
+		"user": {
+			"id": "fake user id"
+		},
+		"currency": "ARS"
+	}`))
 	app.ServeHTTP(w, req)
 
 	var Response struct {
