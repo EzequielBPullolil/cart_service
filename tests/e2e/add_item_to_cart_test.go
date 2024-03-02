@@ -14,11 +14,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-type ErrorResponse struct {
-	Status string `json:"status"`
-	Error  string `json:"error"`
-}
-
 func TestAddItemToCart(t *testing.T) {
 	var item = cart.CreateItem("fake name", "ARS", float64(20), 1)
 	itemJSON, err := json.Marshal(item)
