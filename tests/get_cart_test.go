@@ -19,7 +19,7 @@ func TestGetCartFromDb(t *testing.T) {
 	t.Run("Should return a cart if the id is registered", func(t *testing.T) {
 		var response Response
 		w := httptest.NewRecorder()
-		cart := cart.CreateCart()
+		cart := cart.CreateCart("ARS")
 		assert.NoError(t, cart.Persist())
 		req := httptest.NewRequest("GET", "/carts/"+cart.Id, nil)
 		app.ServeHTTP(w, req)
@@ -40,7 +40,7 @@ func TestGetCartFromDb(t *testing.T) {
 	})
 
 	t.Run("Should calculate the amount of cart", func(t *testing.T) {
-		var cart_suject = cart.CreateCart()
+		var cart_suject = cart.CreateCart("ARS")
 		w := httptest.NewRecorder()
 		assert.NoError(t, cart_suject.Persist())
 		req := httptest.NewRequest("GET", "/carts/"+cart_suject.Id, nil)
@@ -49,14 +49,15 @@ func TestGetCartFromDb(t *testing.T) {
 			var response Response
 			app.ServeHTTP(w, req)
 			assert.NoError(t, json.NewDecoder(w.Body).Decode(&response))
-			assert.Equal(t, "0ARS", response.Cart.Amount)
+			assert.Equal(t, float64(0), response.Cart.Amount)
 		})
 		t.Run("Should not be 0 if the cart have items", func(t *testing.T) {
 			var response Response
-			item := cart.CreateItem("fake_item", "20ARS")
+			item := cart.CreateItem("fake_item", "ARS", float64(0))
 			cart_suject.AddItemAndSave(*item)
 			app.ServeHTTP(w, req)
 			assert.NoError(t, json.NewDecoder(w.Body).Decode(&response))
+			log.Println(response)
 			assert.Equal(t, item.Price, response.Cart.Amount)
 		})
 	})

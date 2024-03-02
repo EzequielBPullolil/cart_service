@@ -15,9 +15,9 @@ import (
 )
 
 func TestAddItemToCart(t *testing.T) {
-	var item = cart.CreateItem("fake name", "0ARS")
+	var item = cart.CreateItem("fake name", "ARS", float64(20))
 	itemJSON, err := json.Marshal(item)
-	cart_suject := cart.CreateCart()
+	cart_suject := cart.CreateCart("ARS")
 	cart_suject.Persist()
 	assert.NoError(t, err)
 	t.Run("Should response with status code 400", func(t *testing.T) {

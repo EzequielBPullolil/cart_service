@@ -11,15 +11,17 @@ import (
 )
 
 type Cart struct {
-	Id     string `json:"id"`
-	Amount string `json:"amount"`
-	Items  []Item `json:"items"`
+	Id       string      `json:"id"`
+	Amount   float64     `json:"amount"`
+	Currency string      `json:"currency"`
+	Items    []Item      `json:"items"`
+	User     interface{} `json:"user"`
 }
 
-func CreateCart() *Cart {
+func CreateCart(currency string) *Cart {
 	return &Cart{
 		Id:     uuid.New().String(),
-		Amount: "0ARS",
+		Amount: float64(0),
 		Items:  make([]Item, 0),
 	}
 }

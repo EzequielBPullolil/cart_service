@@ -26,7 +26,7 @@ func TestCreateCart(t *testing.T) {
 	}
 	assert.NoError(t, json.NewDecoder(w.Body).Decode(&Response))
 	t.Run("Response should", func(t *testing.T) {
-		log.Println(Response)
+		log.Println(w.Body)
 		t.Run("Have cart data and status 201", func(t *testing.T) {
 			assert.Equal(t, 201, w.Result().StatusCode)
 			assert.NotNil(t, Response.Data)
@@ -36,7 +36,7 @@ func TestCreateCart(t *testing.T) {
 			cart := Response.Data
 
 			assert.Empty(t, cart.Items)
-			assert.Equal(t, "0ARS", cart.Amount)
+			assert.Equal(t, float64(0), cart.Amount)
 			assert.NoError(t, uuid.Validate(cart.Id))
 		})
 	})
