@@ -15,7 +15,7 @@ import (
 )
 
 func TestAddItemToCart(t *testing.T) {
-	var item = cart.CreateItem("fake name", "ARS", float64(20))
+	var item = cart.CreateItem("fake name", "ARS", float64(20), 1)
 	itemJSON, err := json.Marshal(item)
 	cart_suject := cart.CreateCart("ARS")
 	cart_suject.Persist()
