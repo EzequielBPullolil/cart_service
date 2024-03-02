@@ -53,12 +53,13 @@ func TestGetCartFromDb(t *testing.T) {
 		})
 		t.Run("Should not be 0 if the cart have items", func(t *testing.T) {
 			var response Response
-			item := cart.CreateItem("fake_item", "ARS", float64(0))
+			expected_price := float64(20)
+			item := cart.CreateItem("fake_item", "ARS", expected_price, 1)
 			cart_suject.AddItemAndSave(*item)
 			app.ServeHTTP(w, req)
 			assert.NoError(t, json.NewDecoder(w.Body).Decode(&response))
-			log.Println(response)
-			assert.Equal(t, item.Price, response.Cart.Amount)
+			assert.NotEqual(t, 0, response.Cart.Amount)
+			assert.Equal(t, expected_price, response.Cart.Amount)
 		})
 	})
 }

@@ -45,6 +45,16 @@ func FindCartById(id string) *Cart {
 	return &cart
 }
 
+// Calculate cart amount
+func (cart *Cart) CalculateAmount() {
+	var amount float64
+	for _, item := range cart.Items {
+		amount += item.CalculateAmount()
+	}
+	cart.Amount = amount
+}
+
+// Add item to cart and persist in DB
 func (c *Cart) AddItemAndSave(item_to_add Item) error {
 	cart_collection := dbmanager.ConnectDB(os.Getenv("DB_URI"), os.Getenv("DB_NAME")).CartCollection
 	if err := c.AddItem(item_to_add); err != nil {
@@ -56,6 +66,7 @@ func (c *Cart) AddItemAndSave(item_to_add Item) error {
 	return error
 }
 
+// Add item to items list if the item is not in the list
 func (c *Cart) AddItem(item_to_add Item) error {
 	for _, v := range c.Items {
 		if v.Id == item_to_add.Id {

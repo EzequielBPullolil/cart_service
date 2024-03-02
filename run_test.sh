@@ -1,1 +1,1 @@
-export DB_URI=mongodb://ezequiel:root45@localhost:27017 && export DB_NAME=cart_test && clear && gotestsum --rerun-fails --watch ./... -v 
+export DB_URI=mongodb://ezequiel:root45@localhost:27017 && export DB_NAME=cart_test && clear && gotestsum --hide-summary=output,skipped --format testname --rerun-fails --watch ./... -v 

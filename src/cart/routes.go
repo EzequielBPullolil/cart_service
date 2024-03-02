@@ -21,7 +21,6 @@ func HandleRoutes(g *gin.Engine) {
 			return
 		}
 		cart := CreateCart(body.Currency)
-		log.Println("\n Persisted cart with id: " + cart.Id + "\n")
 		if err := cart.Persist(); err != nil {
 			log.Println("error during persist cart: " + err.Error())
 			ctx.JSON(400, gin.H{
@@ -38,6 +37,9 @@ func HandleRoutes(g *gin.Engine) {
 
 	g.GET("/carts/:cart_id", func(ctx *gin.Context) {
 		cart := FindCartById(ctx.Param("cart_id"))
+		if cart != nil {
+			cart.CalculateAmount()
+		}
 		ctx.JSON(200, gin.H{
 			"cart": cart,
 		})
