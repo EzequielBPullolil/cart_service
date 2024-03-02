@@ -105,4 +105,39 @@ func HandleRoutes(g *gin.Engine) {
 			"cart":   cart,
 		})
 	})
+	g.PATCH("/carts/:cart_id/items/:item_id", func(ctx *gin.Context) {
+		var new_fields Item
+		cart := FindCartById(ctx.Param("cart_id"))
+		if cart == nil {
+			ctx.JSON(400, gin.H{
+				"status": "error modify item from cart",
+				"error":  "Cart not found",
+			})
+			return
+		}
+
+		if err := ctx.BindJSON(&new_fields); err != nil {
+			log.Println(err)
+			ctx.JSON(400, gin.H{
+				"status": "error modify item from cart",
+				"error":  "invalid item",
+				"detail": err.Error(),
+			})
+			return
+		}
+
+		if err := cart.ModifyItemAndSave(ctx.Param("item_id"), new_fields); err != nil {
+			ctx.JSON(400, gin.H{
+				"status": "error modify item from cart",
+				"error":  err.Error(),
+			})
+			return
+		}
+
+		ctx.JSON(200, gin.H{
+			"status": "cart item updated",
+			"cart":   cart,
+		})
+
+	})
 }

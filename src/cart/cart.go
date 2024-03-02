@@ -99,3 +99,32 @@ func (c *Cart) RemoveItem(item_id string) {
 
 	c.Items = new_items
 }
+
+// modify the cart item with the passed id and update it in the database
+func (c *Cart) ModifyItemAndSave(item_id string, new_fields Item) error {
+	cart_collection := dbmanager.ConnectDB(os.Getenv("DB_URI"), os.Getenv("DB_NAME")).CartCollection
+	if !c.ModifyItem(item_id, new_fields) {
+		return errors.New("item dont exist in the cart")
+	}
+
+	update := bson.M{"$set": bson.M{"items": c.Items}}
+	_, error := cart_collection.UpdateOne(context.Background(), bson.M{"id": c.Id}, update)
+
+	return error
+}
+
+// modifies the cart item with the passed id and returns true if the item was found and modified
+func (c *Cart) ModifyItem(item_id string, new_fields Item) bool {
+	new_items := make([]Item, 0)
+	found_and_modified := false
+	for _, v := range c.Items {
+		if v.Id == item_id {
+			found_and_modified = true
+			v.ModifieFields(new_fields)
+		}
+		new_items = append(new_items, v)
+	}
+
+	c.Items = new_items
+	return found_and_modified
+}

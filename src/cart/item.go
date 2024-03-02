@@ -29,3 +29,45 @@ func CreateItem(name, currency string, price float64, quantity int) *Item {
 func (item Item) CalculateAmount() float64 {
 	return item.Price * float64(item.Quantity)
 }
+
+// modifies the fields and only the fields passed by parameter
+// If any of the fields are not valid, do not modify any of them
+func (item *Item) ModifieFields(new_fields Item) {
+	if !new_fields.ValidateUpdateFields() {
+		return
+	}
+	if new_fields.Currency != item.Currency {
+		item.Currency = new_fields.Currency
+	}
+
+	if new_fields.Name != item.Name {
+		item.Name = new_fields.Name
+	}
+
+	if new_fields.Quantity != item.Quantity {
+		item.Quantity = new_fields.Quantity
+	}
+
+	if new_fields.Price != item.Price {
+		item.Price = new_fields.Price
+	}
+}
+
+func (item Item) ValidateUpdateFields() bool {
+	if item.Currency == "" {
+		return false
+	}
+
+	if item.Name == "" {
+		return false
+	}
+
+	if item.Quantity <= 0 {
+		return false
+	}
+
+	if item.Price < 0 {
+		return false
+	}
+	return true
+}
