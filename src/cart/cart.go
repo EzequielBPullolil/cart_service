@@ -20,9 +20,10 @@ type Cart struct {
 
 func CreateCart(currency string) *Cart {
 	return &Cart{
-		Id:     uuid.New().String(),
-		Amount: float64(0),
-		Items:  make([]Item, 0),
+		Id:       uuid.New().String(),
+		Amount:   float64(0),
+		Items:    make([]Item, 0),
+		Currency: currency,
 	}
 }
 

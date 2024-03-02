@@ -20,7 +20,9 @@ func HandleRoutes(g *gin.Engine) {
 			})
 			return
 		}
+		log.Println(body)
 		cart := CreateCart(body.Currency)
+		cart.User = body.User
 		if err := cart.Persist(); err != nil {
 			log.Println("error during persist cart: " + err.Error())
 			ctx.JSON(400, gin.H{
