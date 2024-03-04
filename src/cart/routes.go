@@ -9,8 +9,8 @@ import (
 func HandleRoutes(g *gin.Engine) {
 	g.POST("/carts", func(ctx *gin.Context) {
 		var body struct {
-			Currency string      `json:"currency"`
-			User     interface{} `json:"user"`
+			Currency string   `json:"currency"`
+			User     struct{} `json:"user"`
 		}
 		if err := ctx.BindJSON(&body); err != nil {
 			log.Println("error binding body: " + err.Error())
@@ -127,7 +127,6 @@ func HandleRoutes(g *gin.Engine) {
 			})
 			return
 		}
-
 		if err := cart.ModifyItemAndSave(ctx.Param("item_id"), new_fields); err != nil {
 			ctx.JSON(400, gin.H{
 				"status": "error modify item from cart",

@@ -3,6 +3,7 @@ package cart
 import (
 	"context"
 	"errors"
+	"log"
 	"os"
 
 	dbmanager "github.com/EzequielBPullolil/cart_service/src/db_manager"
@@ -11,11 +12,11 @@ import (
 )
 
 type Cart struct {
-	Id       string      `json:"id"`
-	Amount   float64     `json:"amount"`
-	Currency string      `json:"currency"`
-	Items    []Item      `json:"items"`
-	User     interface{} `json:"user"`
+	Id       string   `json:"id"`
+	Amount   float64  `json:"amount"`
+	Currency string   `json:"currency"`
+	Items    []Item   `json:"items"`
+	User     struct{} `json:"user"`
 }
 
 func CreateCart(currency string) *Cart {
@@ -127,5 +128,6 @@ func (c *Cart) ModifyItem(item_id string, new_fields Item) bool {
 	}
 
 	c.Items = new_items
+	log.Println(c.Items)
 	return found_and_modified
 }
