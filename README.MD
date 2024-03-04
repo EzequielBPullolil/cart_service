@@ -4,7 +4,7 @@
 
 ## Description
 
-The `cart_service` aims to provide the client with the abstraction of shopping cart logic by offering a well-defined and easy-to-integrate REST API into any system. This system DOES NOT HAVE THE PRODUCT ENTITY defined, meaning the cart can be used for anything; it just needs to receive the UUID of the product or a reference, and optionally, additional data that can be provided using a string.
+The `cart_service` aims to provide the client with the abstraction of shopping cart logic by offering a well-defined and easy-to-integrate REST API into any system. The service is only responsible for providing the cart entity; the item/product should be modeled in your system according to your needs.
 
 ## Api Endpoints
 
@@ -20,11 +20,9 @@ The service provides the following endpoints, following the REST-API architectur
 | **PATCH**  | /carts/:id/items/:item_uuid | To modify the quantity of a specific item       |
 
 
-## Endpoint examples
-
-### Create Cart
+## Create Cart
 To create a cart, you need to send the user data along with the currency that the cart accepts.
-
+### request
 ```bash
 curl --location '<api_url>/carts' \
 --header 'Content-Type: application/json' \
@@ -38,27 +36,68 @@ curl --location '<api_url>/carts' \
 ```
 The user field must have at least the ID field. Whenever the cart data is requested, the user data will be returned as well.
 
----
-### Add item to cart
-```bash
-curl --location '<api_url>/carts/<cart_id>/items' \
---header 'Content-Type: application/json' \
---data '{
-    "id": <item_id>,
-    "name": <item_name>,
-    "price": <item_price>,
-    "currency": <item_currency>,
-    "quantity": <item_cuantity>
-}'
-```
+### Response
+    {
+        
+        "cart": {
+            "id": <cart_uuid>,
+            "amount": 0,
+            "currency": <currency>,
+            "items": [],
+            "user": {
+                "id": "<user_id>"
+                <more_data>
+            }
+        },
+        "status": "cart created"
+    }
+
+## Add item to cart
+
 To add an item to the cart, you should make a request to the `carts/:cart_id/item` endpoint, sending the [Item fields](#Item-fields)
 
 
 None of the fields can be empty. In addition, the quantity and price fields must be greater than zero. The price can be a float value (e.g., 5.10).
+### Request
+```bash
+curl --location '<api_url>/carts/<cart_id>/items' \
+--header 'Content-Type: application/json' \
+--data '{
+    "id": "dotella",
+    "name": "boorsdd",
+    "price": 500,
+    "currency": "ARS",
+    "quantity": 1
+}'
+```
 
----
-### Modify item from cart
+### Response
+    {
+        "data": {
+            "id": <cart:id>,
+            "amount": 0,
+            "currency": "ARS",
+            "items": [
+                {
+                    "id": "dotella",
+                    "name": "boorsdd",
+                    "price": 500,
+                    "currency": "ARS",
+                    "quantity": 1
+                }
+            ],
+            "user": {
+                "id": "<user_id>"
+                <more_data>
+            }
+        },
+        "status": "item added to cart"
+    }
+
+
+## Modify item from cart
 To modify a product in a cart, you should send the fields to be updated in the body to the endpoint with the cart_id and item_id.
+### Request
 ```bash
 curl --location --request PATCH '<api_url>/carts/<cart_id>/items/<item_id>' \
 --header 'Content-Type: application/json' \
@@ -66,21 +105,71 @@ curl --location --request PATCH '<api_url>/carts/<cart_id>/items/<item_id>' \
     "price": 900.5
 }'
 ```
+### Response 
+    {
+        "cart": {
+            "id": <cart_id>,
+            "amount": 0,
+            "currency": "ARS",
+            "items": [
+                {
+                    "id": <item_id>,
+                    "name": <item_name>,
+                    "price": 900.5,
+                    "currency": "ARS",
+                    "quantity": 1
+                },
+            ],
+            "user": {}
+        },
+        "status": "cart item updated"
+    }
 
-### Delete item from cart
+
+Any of the fields can be modified except the ID
+## Delete item from cart
 
 To delete a product from a cart, you should send a request to the endpoint passing the `cart_id and the `id` of the item to be deleted.
+### Request
 ```bash
 curl --location --request DELETE '<api_url>/carts/<cart_id>/items/<item_id>'
 ```
 
+### Response
+    {
+        
+        "cart": {
+            "id": <cart_uuid>,
+            "amount": 0,
+            "currency": <currency>,
+            "items": [],
+            "user": {
+                "id": "<user_id>"
+                <more_data>
+            }
+        },
+        "status": "cart item deleted"
+    }
 
-### Get Cart 
+## Get Cart 
 To retrieve the cart, you should make a GET request to the `carts/<cart_id>` endpoint. This will return the cart data and all items associated with the cart.
+
+### Request
 ```bash
 curl --location --request GET '<api_url>/carts/<cart_id>/'
 ```
 
+
+### Response
+    {
+    "cart": {
+        "id": "86beabc5-caf9-4694-ac6f-a8d0c09709b3",
+        "amount": 0,
+        "currency": "ARS",
+        "items": [],
+        "user": []
+    }
+    }
 
 ## Item fields 
 The fields of the Item must be as follows and comply with the following rules:
@@ -92,3 +181,6 @@ The fields of the Item must be as follows and comply with the following rules:
 | price| float | is greater than zero |
 | currency| string | It is the same currency as the car |
 | quantity| int | is greater than zero |
+
+
+### Dependencies
