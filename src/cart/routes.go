@@ -76,6 +76,9 @@ func HandleRoutes(g *gin.Engine) {
 			})
 			return
 		}
+		if cart != nil {
+			cart.CalculateAmount()
+		}
 		ctx.JSON(201, gin.H{
 			"status": "item added to cart",
 			"data":   cart,
@@ -101,7 +104,9 @@ func HandleRoutes(g *gin.Engine) {
 			})
 			return
 		}
-
+		if cart != nil {
+			cart.CalculateAmount()
+		}
 		ctx.JSON(200, gin.H{
 			"status": "cart updated",
 			"cart":   cart,
@@ -134,7 +139,9 @@ func HandleRoutes(g *gin.Engine) {
 			})
 			return
 		}
-
+		if cart != nil {
+			cart.CalculateAmount()
+		}
 		ctx.JSON(200, gin.H{
 			"status": "cart item updated",
 			"cart":   cart,
