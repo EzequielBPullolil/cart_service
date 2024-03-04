@@ -12,11 +12,11 @@ import (
 )
 
 type Cart struct {
-	Id       string   `json:"id"`
-	Amount   float64  `json:"amount"`
-	Currency string   `json:"currency"`
-	Items    []Item   `json:"items"`
-	User     struct{} `json:"user"`
+	Id       string      `json:"id"`
+	Amount   float64     `json:"amount"`
+	Currency string      `json:"currency"`
+	Items    []Item      `json:"items"`
+	User     interface{} `json:"user"`
 }
 
 func CreateCart(currency string) *Cart {

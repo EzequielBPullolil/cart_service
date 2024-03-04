@@ -9,8 +9,8 @@ import (
 func HandleRoutes(g *gin.Engine) {
 	g.POST("/carts", func(ctx *gin.Context) {
 		var body struct {
-			Currency string   `json:"currency"`
-			User     struct{} `json:"user"`
+			Currency string      `json:"currency"`
+			User     interface{} `json:"user"`
 		}
 		if err := ctx.BindJSON(&body); err != nil {
 			log.Println("error binding body: " + err.Error())
@@ -76,9 +76,8 @@ func HandleRoutes(g *gin.Engine) {
 			})
 			return
 		}
-		if cart != nil {
-			cart.CalculateAmount()
-		}
+
+		cart.CalculateAmount()
 		ctx.JSON(201, gin.H{
 			"status": "item added to cart",
 			"data":   cart,
