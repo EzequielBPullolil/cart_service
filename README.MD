@@ -4,7 +4,23 @@
 
 ## Description
 
-The `cart_service` aims to provide the client with the abstraction of shopping cart logic by offering a well-defined and easy-to-integrate REST API into any system. The service is only responsible for providing the cart entity; the item/product should be modeled in your system according to your needs.
+The service aims to offer the user the abstraction of a simple shopping cart using the RESTful API architecture.
+
+
+## Run service
+1. First, you need to download the repository.
+    ```bash
+    git clone https://github.com/EzequielBPullolil/cart_service && cd cart_service/
+    ```
+2. With the MongoDB service started, we configure the environment variables DB_URI and DB_NAME so that the service connects to the desired database.
+    ```bash
+    export DB_URI=<our_mongodb_uri> && export DB_NAME=<our_db_name>
+    ```
+3. Finally, we compile the binary and run it, passing the port and host of the service as flags.
+    ```bash
+    go build -o ./cart_service ./src/cmd 
+    ./cart_service -host <our_host> -port <our_port>
+    ```
 
 ## Api Endpoints
 
@@ -183,4 +199,10 @@ The fields of the Item must be as follows and comply with the following rules:
 | quantity| int | is greater than zero |
 
 
-### Dependencies
+## Todo
+
+- [x] MVP
+- [ ] Possibility of using several Currencies in the same cart
+- [ ] Add query options to endpoints
+- [ ] Add app tokens to restrict API usage
+- [ ] 
